@@ -14,7 +14,7 @@
 }:
 let
   ir = pkgs.lib.mkGestaltIR {
-    target = pkgs.gestaltPlatform.targets.${builtins.trace target target.name};
+    target = pkgs.gestaltPlatform.targets.${target.name};
     modules = [ "${src}/${mainFile}" ];
   };
   inherit (pkgs) lib;
@@ -27,30 +27,29 @@ let
 
   collectInputs' =
     prefix: inputs: visitedPaths:
-    builtins.trace "collecting inputs for: ${prefix}" (
-      lib.attrsToList (lib.removeAttrs inputs [ "self" ])
-      |> map (
-        { name, value }:
-        let
-          path = if builtins.hasAttr "outPath" value then toString value.outPath else toString value;
-        in
-        if (builtins.hasAttr (builtins.unsafeDiscardStringContext path) visitedPaths) then
-          [ ]
-        else
-          [
-            {
-              name = "${prefix}/${name}";
-              inherit path;
-            }
-          ]
-          ++ (lib.optional (builtins.hasAttr "inputs" value) (
-            collectInputs' "${prefix}/${name}" value.inputs (
-              visitedPaths // { ${builtins.unsafeDiscardStringContext path} = true; }
-            )
-          ))
-      )
-      |> lib.flatten
-    );
+
+    lib.attrsToList (lib.removeAttrs inputs [ "self" ])
+    |> map (
+      { name, value }:
+      let
+        path = if builtins.hasAttr "outPath" value then toString value.outPath else toString value;
+      in
+      if (builtins.hasAttr (builtins.unsafeDiscardStringContext path) visitedPaths) then
+        [ ]
+      else
+        [
+          {
+            name = "${prefix}/${name}";
+            inherit path;
+          }
+        ]
+        ++ (lib.optional (builtins.hasAttr "inputs" value) (
+          collectInputs' "${prefix}/${name}" value.inputs (
+            visitedPaths // { ${builtins.unsafeDiscardStringContext path} = true; }
+          )
+        ))
+    )
+    |> lib.flatten;
   flake = pkgs.writeText "flake.nix" ''
     {
       inputs = {

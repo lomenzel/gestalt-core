@@ -25,27 +25,25 @@ in
         if src == null then
           throw "You must provide a source directory instead of modules when using upstream nix compatibility mode."
         else
-          pkgs.lib.warn
-            "Upstream nix compat mode using recursive nix is very experimental. expect critical errors"
-            (
-              pkgs.callPackage ./upstreamCompat.nix {
-                inherit (inputs)
-                  nixFork
-                  nixpkgs
-                  wechselbalg
-                  self
-                  ;
-                inherit
-                  inputs
-                  src
-                  mainFile
-                  target
-                  extraTargets
-                  pkgs
-                  ;
-                inherit (pkgs.gestaltPlatform) buildApplication;
-              }
-            )
+
+          pkgs.callPackage ./upstreamCompat.nix {
+            inherit (inputs)
+              nixFork
+              nixpkgs
+              wechselbalg
+              self
+              ;
+            inherit
+              inputs
+              src
+              mainFile
+              target
+              extraTargets
+              pkgs
+              ;
+            inherit (pkgs.gestaltPlatform) buildApplication;
+          }
+
       else
         let
           modules' = if src != null then [ ("${src}/${mainFile}") ] else modules;

@@ -4,9 +4,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-appimage.url = "github:ralismark/nix-appimage";
     treefmt-nix.url = "github:numtide/treefmt-nix";
-    wechselbalg = {
-      url = "git+https://rad-node.menzel.lol/rad:zpRitanyyPyavYSf6RWXeXry864M";
-    };
+    wechselbalg.url = "git+https://rad-node.menzel.lol/rad:zpRitanyyPyavYSf6RWXeXry864M";
   };
 
   outputs =
@@ -54,7 +52,7 @@
             // (wechselbalg.overlays.default final prev).lib;
         }
         // {
-          gestaltPlatform = final.lib.recursiveUpdate prev.gestaltPlatform (
+          gestaltPlatform = final.lib.recursiveUpdate (prev.gestaltPlatform or {}) (
             import ./src/platform {
               pkgs = final;
               inherit inputs;
