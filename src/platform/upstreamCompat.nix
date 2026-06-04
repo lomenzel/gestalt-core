@@ -110,7 +110,8 @@ pkgs.stdenv.mkDerivation {
             cd sub
             ${
               nixFork.packages.${pkgs.stdenv.buildPlatform.system}.default
-            }/bin/nix build .#default.${attrName} -L $pwd --impure --offline --extra-experimental-features 'flakes nix-command pipe-operators' --option flake-registry ""
+            }/bin/nix build -L $pwd\#default.${attrName} --impure --offline --extra-experimental-features 'flakes nix-command pipe-operators' --option flake-registry "" \
+              ${collectInputs "core" inputs} ${collectInputs "target" target.input.inputs}
             ls -lah
             cp -r ./result $out
           '';
