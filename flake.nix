@@ -3,14 +3,9 @@
     nixFork.url = "github:lomenzel/nix";
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nix-appimage.url = "github:ralismark/nix-appimage";
-    nix-appimage.inputs.nixpkgs.follows = "nixpkgs";
-    nix-appimage.inputs.flake-utils.follows = "flake-utils";
-    flake-utils.url = "github:numtide/flake-utils";
-    systems.url = "github:nix-systems/default";
     treefmt-nix.url = "github:numtide/treefmt-nix";
-    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
     wechselbalg = {
-      url = "git+https://rad-node.menzel.lol/rad:zpRitanyyPyavYSf6RWXeXry864M.git";
+      url = "git+https://rad-node.menzel.lol/rad:zpRitanyyPyavYSf6RWXeXry864M";
     };
   };
 
@@ -59,7 +54,7 @@
             // (wechselbalg.overlays.default final prev).lib;
         }
         // {
-          gestaltPlatform = (
+          gestaltPlatform = final.lib.recursiveUpdate prev.gestaltPlatform (
             import ./src/platform {
               pkgs = final;
               inherit inputs;
