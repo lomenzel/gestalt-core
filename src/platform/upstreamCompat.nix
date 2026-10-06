@@ -14,7 +14,6 @@
 }:
 let
   ir = pkgs.lib.mkGestaltIR {
-    target = pkgs.gestaltPlatform.targets.${target.name};
     modules = [ "${src}/${mainFile}" ];
   };
   inherit (pkgs) lib;

@@ -2,9 +2,8 @@
   inputs = {
     nixFork.url = "github:lomenzel/nix";
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nix-appimage.url = "github:ralismark/nix-appimage";
     treefmt-nix.url = "github:numtide/treefmt-nix";
-    wechselbalg.url = "git+https://rad-node.menzel.lol/rad:zpRitanyyPyavYSf6RWXeXry864M";
+    wechselbalg.url = "git+file:///home/leonard/Projekte/Gestalt/wechselbalg";
   };
 
   outputs =
@@ -36,13 +35,7 @@
     {
       overlays.default =
         final: prev:
-        let
-          nix-appimage-packages =
-            (import inputs.nix-appimage.inputs.nixpkgs {
-              localSystem = final.stdenv.buildPlatform;
-              crossSystem = final.stdenv.hostPlatform;
-            }).pkgsStatic;
-        in
+
         {
           lib =
             prev.lib

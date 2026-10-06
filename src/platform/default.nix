@@ -3,14 +3,6 @@ let
   lib = pkgs.lib;
 in
 {
-  makeTarget =
-    t:
-    t {
-      inherit (pkgs) lib;
-      inherit pkgs;
-      defaultCapabilities = import ./defaultCapabilities.nix;
-      standardPageView = import ../lib/standardPageView.nix;
-    };
   buildApplication =
     {
       modules ? throw "You must provide a list of modules to build an application.",
@@ -46,9 +38,8 @@ in
 
       else
         let
-          modules' = if src != null then [ ("${src}/${mainFile}") ] else modules;
+          modules' = if src != null then [ (import ("${src}/${mainFile}")) ] else modules;
           ir = pkgs.lib.mkGestaltIR {
-            inherit target;
             modules = modules';
 
           };
