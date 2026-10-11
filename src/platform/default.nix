@@ -9,6 +9,8 @@ in
       target ? pkgs.gestaltPlatform.targets.kirigami,
       extraTargets ? pkgs.gestaltPlatform.targets,
       useUpstreamNix ? (!builtins.hasAttr "reify" builtins) || !builtins.hasAttr "sameFunction" builtins,
+      extraInputs ? {},
+      extraOverlays ? [],
       src ? null,
       mainFile ? "app.nix",
     }:
@@ -32,6 +34,8 @@ in
               target
               extraTargets
               pkgs
+              extraInputs
+              extraOverlays
               ;
             inherit (pkgs.gestaltPlatform) buildApplication;
           }
@@ -41,7 +45,7 @@ in
           modules' = if src != null then [ (import ("${src}/${mainFile}")) ] else modules;
           ir = pkgs.lib.mkGestaltIR {
             modules = modules';
-
+            inherit (pkgs.gestaltPlatform) wasmModule;
           };
 
           app = target.buildApplication ir;
@@ -56,6 +60,7 @@ in
                   lib.mkGestaltIR {
                     inherit target;
                     modules = modules';
+                    inherit (pkgs.gestaltPlatform) wasmModule;
                   }
                 )
               ) extraTargets);

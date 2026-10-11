@@ -119,6 +119,7 @@
               '';
               onClick = msg: s: {
                 state = config.initialState;
+                effect = cfg.initialEffect or cfg.Effects.Noop;
               };
             };
       in

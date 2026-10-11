@@ -33,33 +33,37 @@
       treefmtEval = eachSystem ({ pkgs, ... }: treefmt-nix.lib.evalModule pkgs ./treefmt.nix);
     in
     {
-      overlays.default =
-        final: prev:
+      overlays.default = final: prev: {
+        lib = prev.lib.extend (
+          lfinal: lprev:
+          (import ./src/lib {
+            lib = lfinal;
+            pkgs = final;
+          })
+          // (wechselbalg.overlays.default final prev).lib
 
-        {
-          lib =
-            prev.lib
-            // import ./src/lib {
-              inherit (final) lib;
-            }
-            // (wechselbalg.overlays.default final prev).lib;
-        }
-        // {
-          gestaltPlatform = final.lib.recursiveUpdate (prev.gestaltPlatform or {}) (
-            import ./src/platform {
-              pkgs = final;
-              inherit inputs;
-            }
-          );
-        };
+        );
 
+        # flake.nix overlay
+        gestaltPlatform = final.lib.recursiveUpdate (prev.gestaltPlatform or { }) (
+          import ./src/platform {
+            pkgs = final;
+            inherit inputs;
+          }
+          // {
+            wasmModule = (
+              import ./src/wasmModule.nix {
+                pkgs = final;
+                lib = final.lib;
+              }
+            );
+          }
+        );
+      };
       formatter = eachSystem ({ system, ... }: treefmtEval.${system}.config.build.wrapper);
 
       checks = eachSystem (
-        { system, pkgs, ... }:
-
-        self.packages.${system}
-        // {
+        { system, pkgs, ... }: {
           fmt = treefmtEval.${system}.config.build.check self;
         }
       );
