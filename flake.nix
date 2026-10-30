@@ -3,7 +3,7 @@
     nixFork.url = "github:lomenzel/nix";
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     treefmt-nix.url = "github:numtide/treefmt-nix";
-    wechselbalg.url = "git+file:///home/leonard/Projekte/Gestalt/wechselbalg";
+    wechselbalg.url = "git+file:///home/menzels/gestalt/wechselbalg";
   };
 
   outputs =
